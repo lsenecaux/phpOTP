@@ -8,7 +8,6 @@ namespace OTP;
 abstract class OATH_OTP implements OTP
 {
   protected $_counter;
-  // protected $_secret;
   protected $_properties;
   protected $_hash;
 
@@ -17,7 +16,6 @@ abstract class OATH_OTP implements OTP
     $this->_properties = array(
       'window'  => 1,
       'digits'  => 6,
-      //'algo'    => 'sha1',
     );
 
     $this->_hash = new \Cryptography\HMAC();
@@ -25,7 +23,6 @@ abstract class OATH_OTP implements OTP
 
     try
     {
-      // $this->_secret = Base32::Decode($Secret);
       $this->_hash->Key = Base32::Decode($Secret);
     }
     catch (\Exception $e)
@@ -38,11 +35,7 @@ abstract class OATH_OTP implements OTP
   {
     if (!array_key_exists(strtolower($Property), $this->_properties))
       throw new \Exception(sprintf('%s is not a valid property', $Property));
-    /*
-    if (strtolower($Property) == 'algo')
-      if (!in_array(strtolower($Value), hash_algos()))
-        throw new \Exception(sprintf('%s is not a valid hash algorithm', $Value));
-    */
+
     $this->_properties[strtolower($Property)] = $Value;
   }
 
@@ -58,7 +51,6 @@ abstract class OATH_OTP implements OTP
   {
     $data = pack('NNC*', $this->_counter >> 32, $this->_counter & 0xFFFFFFFF);
     $data = str_pad($data, 8, chr(0), STR_PAD_LEFT);
-    // $hash = hash_hmac($this->Algo, $data, $this->_secret);
     $hash = $this->_hash->ComputeHash($data, FALSE);
     $offset = 2 * hexdec(substr($hash, strlen($hash) -1 , 1));
     $binary = hexdec(substr($hash, $offset, 8)) & 0x7FFFFFFF;
