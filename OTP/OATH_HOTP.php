@@ -20,18 +20,4 @@ final class OATH_HOTP extends OATH_OTP
 
     return $otp;
   }
-
-  public function GetMultipleOTP()
-  {
-    $otp = array();
-    $window = floor($this->Window / 2);
-
-    for ($i = -($window); $i <= $window; $i++)
-    {
-      array_push($otp, parent::GetCurrentOTP());
-      $this->_counter++;
-    }
-
-    return $otp;
-  }
 }
